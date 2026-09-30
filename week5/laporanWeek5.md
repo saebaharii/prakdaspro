@@ -283,6 +283,160 @@ public class tugasAntrean26 {
 
 Program menggunakan `switch-case` untuk memilih layanan berdasarkan kode 1 sampai 4. Bagian `default` menangani kode di luar rentang tersebut dengan menampilkan pesan `Kode layanan tidak tersedia`.
 
+### 3.4 Program Nusantara Pay
+
+Program menggunakan `Scanner` untuk menerima data akun dan transaksi, seperti status akun, saldo, nominal transaksi, lokasi, dan jam. Rangkaian `if-else-if` dengan operator perbandingan dan logika memeriksa aturan transaksi secara berurutan, lalu menentukan apakah transaksi ditolak, perlu verifikasi OTP, ditandai sebagai mencurigakan, atau disetujui.
+
+```java
+package week5;
+import java.util.Scanner;
+
+public class nusantaraPay26 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("---- Nusantara Pay ----");
+        System.out.print("Masukkan status akun (ACTIVE/SUSPICIOUS/BLACK-LISTED): ");
+        String statusAkun = sc.nextLine();
+        System.out.print("Masukkan sisa saldo: $ ");
+        double sisaSaldo = sc.nextDouble();
+        System.out.print("Masukkan nominal transaksi: $ ");
+        double nominalTransaksi = sc.nextDouble();
+        System.out.println("Jumlah limit harian transaksi: $ 10000");
+        System.out.print("Transaksi luar negeri? (true/false): ");
+        boolean isBedaNegara = sc.nextBoolean();
+        System.out.print("Masukkan jam transaksi (0-23): ");
+        int jamTransaksi = sc.nextInt();
+
+        String status;
+        if (statusAkun.equalsIgnoreCase("BLACK-LISTED")) {
+            status = "REJECTED_BLACKLIST";
+        } else if (nominalTransaksi > sisaSaldo) {
+            status = "REJECTED_SALDO";
+        } else if (nominalTransaksi > 10000) {
+            status = "REJECTED_LIMIT";
+        } else if (isBedaNegara && nominalTransaksi > 2000) {
+            status = "FLAGGED_FRAUD";
+        } else if (jamTransaksi >= 0 && jamTransaksi <= 4
+                && nominalTransaksi > 1000) {
+            status = "REQUIRE_OTP_NIGHT";
+        } else if (statusAkun.equalsIgnoreCase("SUSPICIOUS")
+                && nominalTransaksi > 500) {
+            status = "REQUIRE_OTP_SUSPICIOUS";
+        } else {
+            status = "APPROVED";
+        }
+        
+        System.out.println("Status transaksi: " + status);
+        sc.close();
+    }
+}
+```
+
+#### Hasil Run
+
+Contoh input: status akun `ACTIVE`, saldo `5000`, nominal transaksi `250`, transaksi luar negeri `false`, dan jam `12`.
+
+```text
+Status transaksi: APPROVED
+```
+
+### 3.5 Program Perhitungan Pajak
+
+Program menggunakan `Scanner` untuk menerima nilai PKP dan variabel `double` untuk menyimpan nilai pajak. Struktur `if-else-if` memeriksa rentang PKP dan menghitung pajak progresif sesuai tarif setiap lapisan. `printf` menampilkan hasil pajak dalam format rupiah tanpa angka desimal.
+
+```java
+package week5;
+import java.util.Scanner;
+public class pajak26 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("---- Perhitungan PPh 21 Tahunan ----");
+        System.out.print("Masukkan Penghasilan Kena Pajak (PKP): Rp ");
+        double pkp = sc.nextDouble();
+        double pajak;
+        if (pkp <= 0) {
+            pajak = 0;
+        } else if (pkp <= 60000000) {
+            pajak = pkp * 0.05;
+        } else if (pkp <= 250000000) {
+            pajak = (60000000 * 0.05) + ((pkp - 60000000) * 0.15);
+        } else if (pkp <= 500000000) {
+            pajak = (60000000 * 0.05) + (190000000 * 0.15) + ((pkp - 250000000) * 0.25);
+        } else {
+            pajak = (60000000 * 0.05) + (190000000 * 0.15) + (250000000 * 0.25) + ((pkp - 500000000) * 0.30);
+        }
+        System.out.printf("PPh 21 tahunan: Rp %.0f%n", pajak);
+        sc.close();
+    }
+}
+```
+
+#### Hasil Run
+
+Contoh input PKP: `100000000`.
+
+```text
+PPh 21 tahunan: Rp 9000000
+```
+
+### 3.6 Program Penentu Ruang Perawatan UGD
+
+Program menggunakan `Scanner` untuk menerima kondisi pasien dan ketersediaan bed. Struktur `if-else-if` bersama operator perbandingan dan logika mengevaluasi kondisi secara berurutan untuk menentukan lokasi perawatan, mulai dari ICU hingga rawat jalan.
+
+```java
+package week5;
+import java.util.Scanner;
+
+public class ugd26{
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("---- Sistem Penentu Ruang Perawatan UGD ----");
+        System.out.print("Masukkan saturasi oksigen (SpO2): ");
+        int spo2 = sc.nextInt();
+        System.out.print("Masukkan sisa bed ICU: ");
+        int sisaBedICU = sc.nextInt();
+        System.out.print("Masukkan tekanan darah sistolik (mmHg): ");
+        int tekananSistolik = sc.nextInt();
+        System.out.print("Pasien sadar penuh? (true/false): ");
+        boolean sadarPenuh = sc.nextBoolean();
+        System.out.print("Masukkan suhu tubuh (C): ");
+        double suhuTubuh = sc.nextDouble();
+        System.out.print("Memiliki riwayat komorbid? (true/false): ");
+        boolean memilikiKomorbid = sc.nextBoolean();
+        System.out.print("Masukkan usia pasien: ");
+        int usia = sc.nextInt();
+        System.out.print("Masukkan laju napas (x/menit): ");
+        int lajuNapas = sc.nextInt();
+
+        String lokasiPerawatan;
+        if (spo2 < 85 && sisaBedICU > 0) {
+            lokasiPerawatan = "ICU";
+        } else if (spo2 < 85 && sisaBedICU == 0) {
+            lokasiPerawatan = "UGD_VENTILATOR_MOBIL";
+        } else if ((spo2 >= 85 && spo2 <= 89) || tekananSistolik < 90 || tekananSistolik > 180 || !sadarPenuh) {
+            lokasiPerawatan = "RESUSITASI_UGD";
+        } else if (((spo2 >= 90 && spo2 <= 94) || suhuTubuh > 39) && memilikiKomorbid && usia >= 65) {
+            lokasiPerawatan = "HCU_ISOLASI";
+        } else if ((spo2 >= 90 && spo2 <= 94) || lajuNapas > 24) {
+            lokasiPerawatan = "RAWAT_INAP_UMUM";
+        } else {
+            lokasiPerawatan = "RAWAT_JALAN";
+        }
+
+        System.out.println("Lokasi perawatan: " + lokasiPerawatan);
+        sc.close();
+    }
+}
+```
+
+#### Hasil Run
+
+Contoh input: SpO2 `97`, sisa bed ICU `2`, tekanan sistolik `120`, sadar penuh `true`, suhu `36.5`, komorbid `false`, usia `20`, dan laju napas `18`.
+
+```text
+Lokasi perawatan: RAWAT_JALAN
+```
+
 ---
 
 ## 4: KESIMPULAN

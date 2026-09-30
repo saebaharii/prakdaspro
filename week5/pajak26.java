@@ -1,6 +1,5 @@
 package week5;
 import java.util.Scanner;
-
 public class pajak26 {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
